@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: spring-deployment
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: spring-app
+
+  template:
+    metadata:
+      labels:
+        app: spring-app
+
+    spec:
+      containers:
+        - image: spring-server
+          imagePullPolicy: IfNotPresent
+          ports:
+           - containerPort: 8080
+          name: spring-container
+
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: spring-configmap
+                  key: DB_USERNAME
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: spring-configmap
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: spring-configmap
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: spring-configmap
+                  key: DB_NAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: spring-secret
+                  key: DB_PASSWORD
+
+
+
